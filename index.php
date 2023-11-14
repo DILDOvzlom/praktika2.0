@@ -256,15 +256,15 @@ if ($add_msg==TRUE) { // Если добавляем СООБЩЕНИЕ
 $temka=file("$datadir/$fid$id.csv"); $kmax=count($temka); $k=$kmax;
 do {$k--; $dtt=explode("|",$temka[$k]);
 if ($dtt[3]==$id) { $zag=$dtt[5]; 
-if ($dtt[11]==FALSE) exit("$back ждем ответ от сервера");
-if ($msg==$dtt[14]) exit("$back. СПАМ ТУД МОЖЕТ БЫТЬ НО АДМИН СЕРВЕРА УПАЛ В ЗАПОЙ!");
+if ($dtt[11]==FALSE) exit("$back тема закрыта и добавление сообщений запрещено!");
+if ($msg==$dtt[14]) exit("$back. Такое сообщение уже размещено последним в данной теме. Спамить на форуме запрещено!");
 }
 } while($j>0);
 } // $add_msg==TRUE
 
 
 $name=wordwrap($name,30,' ',1); // разрываем длинные строки
-$zag=wordwrap($zag,50,' ',1); if (mb_strlen(ltrim($zag))<3) exit("$back ! ОШИБОЧКА ВЫШЛА");
+$zag=wordwrap($zag,50,' ',1); if (mb_strlen(ltrim($zag))<3) exit("$back ! Ошибка в вводе данных заголовка!");
 $name=str_replace("|","I",$name);
 $who=str_replace("|","&#124;",$who);
 $email=str_replace("|","&#124;",$email);
@@ -286,9 +286,9 @@ $text_msg="$rn_tema|$golos|$fid|$id|$tektime|$zag|$who|$rn_user|$name|$email|$vi
 $text_msg=replacer($text_msg); $exd=explode("|",$text_msg); $name=$exd[8]; $zag=$exd[5]; $msg=replacer($msg);
 
 if (!isset($name) || mb_strlen($name) > $maxname || mb_strlen($name) <1) exit("$back Ваше <B>Имя пустое, или превышает $maxname</B> символов!</B></center>");
-if (preg_match("/[^(\\w)|(\\x7F-\\xFF)|(\\-)]/",$name)) exit("$back ТВОЁ ИМЯ ЗАПРЕЩЯЕТ НАМ ЕГО ОТПРАВИТЬ НА СЕРВЕР.");
+if (preg_match("/[^(\\w)|(\\x7F-\\xFF)|(\\-)]/",$name)) exit("$back Ваше имя содержит запрещённые символы. Разрешены русские и английские буквы, цифры, подчёркивание и тире.");
 if (mb_strlen(ltrim($zag))<3 || mb_strlen($zag) > $maxzag) exit("$back Слишком короткое название темы или <B>название превышает $maxzag</B> символов!</B></center>");
-if (mb_strlen(ltrim($msg))<2 || mb_strlen($msg) > $maxmsg) exit("$back Ваше <B>сообщение очень плохое но она мне нравится $maxmsg</B> </B></center>");
+if (mb_strlen(ltrim($msg))<2 || mb_strlen($msg) > $maxmsg) exit("$back Ваше <B>сообщение короткое или превышает $maxmsg</B> символов.</B></center>");
 if (!preg_match('/^([0-9a-zA-Z]([-.w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-w]*[0-9a-zA-Z].)+[a-zA-Z]{2,9})$/si',$email) and mb_strlen($email)>30 and $email!="") exit("$back и введите корректный E-mail адрес!</B></center>");
 
 
@@ -393,6 +393,30 @@ print "<script language='Javascript'>function reload() {location=\"index.php?id=
 <B><a href='index.php?id=$fid$id$pageadd#m$in'>ДАЛЬШЕ >>></a></B></td></tr></table></td></tr></table></center></body></html>";
 exit; }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //--------------- ШАПКА для всех страниц форума ------------//
 // Определяем дату последнего визита. +5 минут погрешности
 if (isset($_COOKIE['wrfcookies'])) {
@@ -728,7 +752,9 @@ $frname=str_replace(' »','',$frname); //вырезаем лишние симв�
 print"<table width=100%><TR>
 <td><span class=nav>&nbsp;&nbsp;&nbsp;<a href='$forum_url' class=nav>$forum_name</a> » <a href='index.php?id=$id'><B>$frname</B></a> »</span></td>
 
-
+<TD align=right><form action='index.php?id=$fid&find' method=POST name=finder>Фильтр по названию темы: 
+<input name='findme' value='$findme' class=post type='text' maxlength=30 size=20>
+<input type=submit class=mainoption value='Искать'></form></td></tr></table>
 
 <table width=100% cellpadding=2 cellspacing=1 class=forumline><tr>
 <th width=60% colspan=2 class=thCornerL height=25>Тема</th>

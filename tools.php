@@ -1,12 +1,22 @@
-<? 
-error_reporting(0);
-ini_set('register_globals','off');
+<? // WR-forum Lite v 2.3 UTF-8 //  07.01.2023 г.  //  WR-Script.ru
+
+//error_reporting (E_ALL);
+error_reporting(0); // РАЗКОМЕНТИРУЙТЕ для постоянной работы
+ini_set('register_globals','off');// Все скрипты написаны для этой настройки php
 
 include "data/config.php";
 
+
+// оставить только поиск здесь
+// простая регистрация и авторизация (без мыл)
+// 
+
+
+
+// Определяем URL форума 11-11-2018 поддержка http / https
 $url="http".(($_SERVER['SERVER_PORT']==443)?"s":"")."://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']; $fu=explode('tools.php', $url);$forum_url=$fu[0];
 
-
+// Функция содержит ПРОДОЛЖЕНИЕ ШАПКИ. Вызывается: addtop();
 function addtop() { global $wrfname,$forum_skin,$date,$time;
 
 // ищем В КУКАХ wrfcookies чтобы вывести ИМЯ
@@ -695,7 +705,44 @@ echo'</td></tr><tr>
 
 
 
+if ($_GET['event']=="find") { // ПОИСК
+$minfindme="3"; //минимальное кол-во символов в слове для поиска
+echo'<BR><form action="tools.php?event=go&find" method=POST>
+<center><table class=forumline align=center width=700>
+<tr><th class=thHead colspan=4 height=25>Поиск</th></tr>
+<tr class=row2>
+<td class=row1>Запрос: <input type="text" style="width: 250px" class=post name=findme size=30></TD>
+<TD class=row1>Тип: <select style="FONT-SIZE: 12px; WIDTH: 120px" name=ftype>
+<option value="0">&quotИ&quot
+<option value="1" selected>&quotИЛИ&quot
+<option value="2">Вся фраза целиком
+</select></td>
+<td class=row1><INPUT type=checkbox name=withregistr><B>С учётом РЕГИСТРА</B></TD>
+<input type=hidden name=gdefinder value="1">
+</tr>';
 
+print"<TR><TD class=row1 colspan=4>ИЛИ найти все сообщения зарегистрированного пользователя: 
+<SELECT name=user style='FONT-SIZE: 14px; WIDTH: 250px'><OPTION value='0' selected> - - Выбрать пользователя - -</OPTION>";
+$slines=file("data/user.php"); $smax=count($slines); $i="1"; do {
+$slines[$i]=replacer($slines[$i]); $dts=explode("|",$slines[$i]);
+print "<OPTION value=\"$dts[2]\">$dts[2]</OPTION>\r\n"; $i++; } while($i < $smax);
+echo'</SELECT></TD>
+
+
+<tr class=row1>
+<td class=row1 colspan=4 width="100%">
+Язык запросов:<br><UL>
+<LI><B>&quotИ&quot</B> - должны присутствовать оба слова;</LI><br>
+<LI><B>&quotИЛИ&quot</B> - есть ХОТЯ БЫ одно из слов;</LI><br>
+<LI><B>&quotВся фраза целиком&quot</B> - в искомом документе ищите фразу на 100% соответствующую вашему запросу;</LI><BR><BR>
+<LI><B>&quotС учётом РЕГИСТРА&quot</B> - поиск ведётся с учётом введённого ВАМИ РЕГИСТРА;</LI><BR><BR>
+</UL>Скрипт ищет все данные, которые начинаются с введенной вами строки. Например, при запросе &quotфорум&quot будут найдены слова &quotфорум&quot, &quotфорумы&quot, &quotфорумом&quot и многие другие.
+</td>
+</tr><tr><td class=row1 colspan=4 align=center height=28><input type=submit class=post value="  Поиск  "></td></form>
+</tr></table><BR><BR>';
+
+print "Ограничение на поиск: <BR> - минимальное кол-во символов: <B>$minfindme</B>";
+}
 
 
 
@@ -840,7 +887,18 @@ else $msgtowrite=$msg;
 
 
 if (!isset($m)) {
-print
+print"
+<small><BR>По запросу '<U><B>$findme</B></U>' в пол$add найдено: <HR size=+2 width=99% color=navy>
+<BR><form action='tools.php?event=go&find' method=POST>
+<table class=forumline align=center width=700>
+<tr><th class=thHead colspan=4 height=25>Повторить поиск по сообщению</th></tr>
+<tr class=row2>
+<td class=row1>Запрос: <input type='text' value='$findme' style='width: 250px' class=post name=findme size=30>
+<INPUT type=hidden value='1' name=ftype>
+<INPUT type=hidden value='0' name=user>
+<input type=hidden name=gdefinder value='1'>
+<input type=submit class=post value='  Поиск  '></td></table></form><br>
+<table width=100% class=forumline><TR align=center class=small><TH class=thCornerL><B>№</B></TH><TH class=thCornerL width=35%><B>Заголовок</B></TH><TH class=thCornerL width=70%><B>часть сообщения</B></TH><TH class=thCornerL><B>Совпадений<BR> в теме</B></TH></TR>"; $m="1"; }
 
 $in=$iii+1; if ($in>$msg_onpage) {$page=ceil($in/$msg_onpage);} else $page="1"; // расчитываем верную страницу и номер сообщения
 

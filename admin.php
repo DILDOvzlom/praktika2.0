@@ -1,15 +1,15 @@
-<? 
+<? // WR-forum Lite v 2.3 UTF-8 //  07.01.2023 г.  //  WR-Script.ru
 
-error_reporting (E_ALL); 
-ini_set('register_globals','off'); 
+error_reporting (E_ALL); //error_reporting(0);
+ini_set('register_globals','off'); // Все скрипты написаны для этой настройки php
 
-$podpis_pokaz=TRUE; 
+$podpis_pokaz=TRUE; // Показывать подпись участников ВСЕМ (включая не зарегистрированных и поисковиков)
 include "data/config.php";
 
-$skey="657567"; 
-$adminpass=$password;
+$skey="657567"; // Секретный ключ НЕ МЕНЯТЬ !!! 
+$adminpass=$password; // Авторизация
 
-function replacer ($text) { 
+function replacer ($text) { // ФУНКЦИЯ очистки кода
 $text=str_replace("&#032;",' ',$text);
 $text=str_replace(">",'&gt;',$text);
 $text=str_replace("<",'&lt;',$text);
@@ -28,7 +28,7 @@ $text=str_replace('   ',' ',$text);
 return $text; }
 
 
-function unreplacer ($text) { 
+function unreplacer ($text) { // ФУНКЦИЯ замены спецсимволов конца строки на обычные
 $text=str_replace("&lt;br&gt;","<br>",$text);
 $text=str_replace("&#124;","|",$text);
 return $text;}
@@ -38,8 +38,8 @@ function nospam() { global $max_key,$rand_key; // Функция АНТИСПА�
 if (array_key_exists("image", $_REQUEST)) { $num=replacer($_REQUEST["image"]);
 for ($i=0; $i<10; $i++) {if (md5("$i+$rand_key")==$num) {imgwr($st,$i); die();}} }
 $xkey=""; mt_srand(time()+(double)microtime()*1000000);
-$dopkod=mktime(0,0,0,date("m"),date("d"),date("Y")); 
-$stime=md5("$dopkod+$rand_key");
+$dopkod=mktime(0,0,0,date("m"),date("d"),date("Y")); // доп.код: меняется каждые 24 часа
+$stime=md5("$dopkod+$rand_key");// доп.код
 echo'Защитный код: <noindex>';
 for ($i=0; $i<$max_key; $i++) {
 $snum[$i]=mt_rand(0,9); $psnum=md5($snum[$i]+$rand_key+$dopkod);
@@ -120,7 +120,7 @@ body {background: #D5EAFF; font-family: "Roboto", sans-serif; font-size: 15px;}
 </style></head><body>
 <div class="login-page">
 <div class="form">
-вы админ кста теперь <BR><BR>
+Авторизация: WR-Forum 2.3<BR><BR>
 <form action="admin.php" method=POST name=pswrd>
 <input type="text" name=name value="" placeholder="логин"/>
 <input type="password" name=pass placeholder="пароль"/>';
@@ -129,7 +129,7 @@ body {background: #D5EAFF; font-family: "Roboto", sans-serif; font-size: 15px;}
 if ($antispam==TRUE) nospam(); // АНТИСПАМ !
 
 
-print"<button>Войти</button><p class=\"message\">Проблемы при входе? <a href=\"admin.php?event=clearcooke\">написать админу</a></p></form></div></div>
+print"<button>Войти</button><p class=\"message\">Проблемы при входе? <a href=\"admin.php?event=clearcooke\">Очистить КУКИ</a></p></form></div></div>
 <SCRIPT language=JavaScript>document.pswrd.name.focus();</SCRIPT>
 ";
 exit;}
@@ -1845,7 +1845,7 @@ function DoPrompt(action) { var revisedMessage; var currentMessage=document.REPL
 <tr>
 <td><a href="index.php">ИСТОРИЧЕСКАЯ СТЕПЕНЬ ДЕБЕЛИЗМА МАМОНА</a>
 <br><div align=center>Вы вошли как <B><font color=red>МАМОНОВ</font></B></td>
-<td align="center" valign="middle"><span class="maintitle"><a href=admin.php><h3><font color=red>Панель администрирования<br></font> <?=$forum_name?></h3></a></span>
+<td align="center" valign="middle"><span class="maintitle"><a href=admin.php><h3><font color=red>Панель админа<br></font> <?=$forum_name?></h3></a></span>
 <table width=80%><TR><TD align=center><span class="gen"><?=$forum_info?><br><br></span></TD></TR></TABLE>
 </td></tr></table>
 
@@ -1866,24 +1866,16 @@ function DoPrompt(action) { var revisedMessage; var currentMessage=document.REPL
 </style>
 
 <table id="nav8" cellspacing="0"><tr>
-
-<td><B>Работа с данными</B><ul>
-<li><a href="admin.php?event=makecopy">Сделать копию</a>
-<li><a href='admin.php?event=restore' class=mainmenu onclick="return confirm('Если Вы уже делали копию ранее, а сейчас видите проблемы со скриптом, то восстановить можно. Заменить главный файл форума из копии (сделанной ВАМИ РАНЕЕ)? Уверены?')">Восстановить из копии (главн. стр.)</a>
+<td><B>Редактор историй</B><ul>
+<td><B>Работа с базой данных</B><ul>
+<li><a href="admin.php?event=makecopy">Сделать резервную копию </a>
+<li><a href='admin.php?event=restore' class=mainmenu onclick="return confirm('')">Восстановить базу с сервера</a>
 </ul></td>
 
-<td><a href="admin.php?event=userwho">Пользователи</a><ul>
-<li><a href="admin.php?newstatistik">Пересчитать статистику (запуск при поврежении БД)</a>
-
+<td><a href="admin.php?event=userwho">Участники</a><ul>
+<li><a href="admin.php?newstatistik">Статистика форума</a>
+<li><a href="?delalluser=yes" title="УДАЛИТЬ" onclick="return confirm('Будут удалены ВСЕ НЕ АКТИВИРОВАННЫЕ УЧЁТНЫЕ ЗАПИСИ! Удалить? Уверены?')">Удалить ВСЕХ ИЗ БАЗЫ</a>
 </ul></td>
-
-
-
-</ul></td>
-
-<td><a href="admin.php?event=configure">Настройки</a><ul>
-</ul></td>
-
 
 
 </td></tr></table>
@@ -1895,8 +1887,8 @@ function DoPrompt(action) { var revisedMessage; var currentMessage=document.REPL
 <? 
 if (is_file("$datadir/wrf-copy.csv")) {
 if (count(file("$datadir/wrf-copy.csv"))<1) $a2="<font color=red size=+1>НО файл копии ПУСТ! Срочно пересоздайте!</font><br> (смотрите права доступа, если эо сообщение повторяется)"; else $a2="";
-$a1=round((time()-filemtime("$datadir/wrf-copy.csv"))/86400); if ($a1<1) $a1="</font>"; else $a1.="</font> дней назад.";
-$add="<br><B><center>Копия была создана <font color=red size=+1>".$a1." $a2</B>"; if ($a1>90) $add.=""; if ($a1>10) $add.=""; if ($a1>5) $add.="ПОСТАВТЕ НАМ 4 И МЫ ДОВЛЬНЫ ЕСЛИ 5 ТО ВООБЩЕ НАДО ОТМЕТИТЬ КСТА"; $add.="</center>";} else $add="";
+$a1=round((time()-filemtime("$datadir/wrf-copy.csv"))/86400); if ($a1<1) $a1="отправлена и</font> мы уже загрузили все на сервак"; else $a1.="</font> ";
+$add="<br><B><center>Копия была  <font color=red size=+1>".$a1." $a2</B>"; if ($a1>90) $add.="Да уж, больше 3-х месяцев ниодной копии не делали. Испытываете судьбу? Делайте БЕГОМ!"; if ($a1>10) $add.="Вы что! СРОЧНО делайте копию! А вдруг сбой? Как будете данные восстанавливать?!!"; if ($a1>5) $add.="Пора делать копию. Берегите свои нервы. Чтобы быть спокойным при сбое ;-)"; $add.="</center>";} else $add="";
 
 // читаем файл с именами пользователей в память чтобы показать последнего
 $userlines=file("$datadir/user.php");
