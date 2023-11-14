@@ -1,0 +1,40 @@
+<html>
+<head>
+<title><?print"$frtname $frname $forum_name";?></title>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Language" content="ru">
+<meta name="description" content="<?=strip_tags($forum_info);  print" - $forum_name";?>">
+<meta http-equiv="keywords" content="<? print"$frtname $frname $forum_name";?>">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="Resource-type" content="document">
+<meta name="document-state" content="dynamic">
+<meta name="Robots" content="index,follow">
+<link rel="stylesheet" href="<?=$forum_skin?>" type="text/css">
+<SCRIPT language=JavaScript>
+<!--
+function x () {return;}
+function FocusText() {
+ document.REPLIER.msg.focus();
+ document.REPLIER.msg.select();
+ return true; }
+function DoSmilie(addSmilie) {
+ var revisedMessage;
+ var currentMessage=document.REPLIER.msg.value;
+ revisedMessage=currentMessage+addSmilie;
+ document.REPLIER.msg.value=revisedMessage;
+ document.REPLIER.msg.focus();
+ return;
+}
+function DoPrompt(action) { var revisedMessage; var currentMessage=document.REPLIER.msg.value; }
+//-->
+</SCRIPT>
+</head>
+<body>
+
+<center><a href='<?=$forum_url?>'><h1><?=$forum_name?></h1></a>
+<div>
+<a href='<?=$forum_url?>'><button class='knopka color'>ОСНОВА ИСТОРИЙ</button></a>
+<hr size=-1 width=60%><center><?=$forum_info?>
+</div><BR></center>
